@@ -3,6 +3,7 @@ from fastapi import FastAPI, HTTPException, Form
 from pydantic import BaseModel
 from sklearn.preprocessing import StandardScaler
 import pickle
+import gunicorn
 
 app = FastAPI()
 

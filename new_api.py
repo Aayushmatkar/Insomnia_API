@@ -16,7 +16,7 @@ class SleepData(BaseModel):
     stress_level: float
     physical_activity_level: float
 
-@app.post("/")
+@app.get("/")
 def foobar():
     return {
         "Server is up and Running"

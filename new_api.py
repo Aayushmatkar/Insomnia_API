@@ -3,12 +3,20 @@ from fastapi import FastAPI, HTTPException, Form
 from pydantic import BaseModel
 from sklearn.preprocessing import StandardScaler
 import pickle
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
 
 app = FastAPI()
 
 # Load the pre-trained Random Forest Classifier model and scaler
-model = pickle.load(open('sleep_disorder_model.pkl', 'rb'))
-scaler = pickle.load(open('scaler.pkl', 'rb'))
+try:
+    model = pickle.load(open('sleep_disorder_model.pkl', 'rb'))
+    scaler = pickle.load(open('scaler.pkl', 'rb'))
+except Exception as e:
+    logging.error(f"Failed to load model and scaler: {str(e)}")
+    raise
 
 class SleepData(BaseModel):
     quality_of_sleep: float
@@ -52,5 +60,6 @@ def predict_sleep_disorder(data: SleepData):
             return {"SleepDisorder": None, "error_message": "Unable to make a prediction for the given input."}
 
     except Exception as e:
-        # Return an error message if an exception occurs
+        # Log the error and return a response
+        logging.error(f"Prediction error: {str(e)}")
         return {"error_message": f"An error occurred: {str(e)}"}
